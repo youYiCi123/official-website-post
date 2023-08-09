@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.guanWang.mapper.ConceptIdeaMapper">
+    <resultMap id="BaseResultMap" type="com.example.guanWang.model.ConceptIdea">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="service_desc" jdbcType="VARCHAR" property="serviceDesc"/>
+        <result column="icon_url" jdbcType="VARCHAR" property="iconUrl"/>
+        <result column="img_url" jdbcType="VARCHAR" property="imgUrl"/>
+    </resultMap>
+
+    <select id="list" parameterType="java.lang.String" resultType="com.example.guanWang.model.ConceptIdea">
+        select
+        id, title,service_desc,icon_url,img_url
+        from concept
+        <if test="keyword != null  and keyword != ''" >
+            where title like concat('%', #{keyword}, '%')
+        </if>
+    </select>
+    
+    <delete id="delete" parameterType="java.lang.Long">
+        delete
+        from concept
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="create" parameterType="com.example.guanWang.model.ConceptIdea">
+        insert into concept ( id, title,service_desc,icon_url,img_url)
+        values (#{id,jdbcType=INTEGER},#{title,jdbcType=VARCHAR},
+        #{serviceDesc,jdbcType=VARCHAR},#{iconUrl,jdbcType=VARCHAR},
+        #{imgUrl,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="update" parameterType="com.example.guanWang.model.ConceptIdea">
+        update concept
+        <set>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="serviceDesc != null">
+                service_desc = #{serviceDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="iconUrl != null">
+                icon_url = #{iconUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="imgUrl != null">
+                img_url = #{imgUrl,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.guanWang.mapper.CultureMapper">
+    <resultMap id="BaseResultMap" type="com.example.guanWang.model.Culture">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="culture_name" jdbcType="VARCHAR" property="cultureName"/>
+        <result column="culture_desc" jdbcType="VARCHAR" property="cultureDesc"/>
+        <result column="sort" jdbcType="INTEGER" property="sort"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, culture_name, culture_desc, sort
+    </sql>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        delete
+        from culture
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <select id="queryCulture" resultType="com.example.guanWang.model.Culture">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        culture
+        where id=#{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="list" parameterType="java.lang.String" resultType="com.example.guanWang.model.Culture">
+        select
+        id, culture_name,culture_desc, sort
+        from culture
+        <if test="keyword != null  and keyword != ''" >
+            where culture_name like concat('%', #{keyword}, '%')
+        </if>
+    </select>
+
+    <insert id="create" parameterType="com.example.guanWang.model.Culture">
+        insert into culture (id, culture_name, culture_desc, sort)
+        values (#{id,jdbcType=BIGINT},#{cultureName,jdbcType=VARCHAR}, #{cultureDesc,jdbcType=VARCHAR},
+        #{sort,jdbcType=INTEGER})
+    </insert>
+
+    <update id="update" parameterType="com.example.guanWang.model.Culture">
+        update culture
+        <set>
+            <if test="cultureName != null">
+                culture_name = #{cultureName,jdbcType=VARCHAR},
+            </if>
+            <if test="cultureDesc != null">
+                culture_desc = #{cultureDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                sort=#{sort,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.guanWang.mapper.ProdSeriesMapper">
+    <resultMap id="BaseResultMap" type="com.example.guanWang.model.SeriesModel">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="series_name" jdbcType="VARCHAR" property="seriesName"/>
+        <result column="english_name" jdbcType="VARCHAR" property="englishName"/>
+    </resultMap>
+
+    <select id="list" parameterType="java.lang.String" resultType="com.example.guanWang.model.SeriesModel">
+        select
+        id, series_name,english_name
+        from prod_series
+        <if test="keyword != null  and keyword != ''" >
+            where series_name like concat('%', #{keyword}, '%')
+        </if>
+    </select>
+
+    <select id="listAll" resultType="com.example.guanWang.model.SeriesModel">
+        select
+        id, series_name,english_name
+        from prod_series
+    </select>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        delete
+        from prod_series
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="create" parameterType="com.example.guanWang.model.SeriesModel">
+        insert into prod_series ( id, series_name,english_name)
+        values (#{id,jdbcType=INTEGER},#{seriesName,jdbcType=VARCHAR},#{englishName,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="update" parameterType="com.example.guanWang.model.SeriesModel">
+        update prod_series
+        <set>
+            <if test="seriesName != null">
+                series_name = #{seriesName,jdbcType=VARCHAR},
+            </if>
+            <if test="englishName != null">
+                english_name = #{englishName,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

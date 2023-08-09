@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.guanWang.mapper.ProdContentMapper">
+    <resultMap id="BaseResultMap" type="com.example.guanWang.model.ProdDetail">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="prod_name" jdbcType="VARCHAR" property="prodName"/>
+        <result column="pic" jdbcType="VARCHAR" property="pic"/>
+        <result column="album_pics" jdbcType="VARCHAR" property="albumPics"/>
+        <result column="principle" jdbcType="VARCHAR" property="principle"/>
+        <result column="feature" jdbcType="VARCHAR" property="feature"/>
+        <result column="register_card" jdbcType="VARCHAR" property="registerCard"/>
+        <result column="model" jdbcType="VARCHAR" property="model"/>
+        <result column="expire_date" jdbcType="VARCHAR" property="expireDate"/>
+        <result column="pack" jdbcType="VARCHAR" property="pack"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,prod_name,pic,album_pics,principle,feature,register_card,model,expire_date,pack
+    </sql>
+
+    <select id="queryProdContent" resultType="com.example.guanWang.dto.ProdParam">
+        select
+        nc.*,nb.prod_type
+        from
+        prod_content nc
+        LEFT JOIN prod_brief nb ON nc.id=nb.id
+        where nb.id=#{id}
+    </select>
+
+    <select id="getProdByType" resultType="com.example.guanWang.model.ProdPreShow">
+        select
+        nc.id,nc.prod_name,nc.pic,nc.principle,nc.feature
+        from
+        prod_content nc
+        LEFT JOIN prod_brief nb ON nc.id=nb.id
+        where nb.prod_type=#{prodType}
+    </select>
+
+    <insert id="addContent" parameterType="com.example.guanWang.dto.ProdParam">
+        insert into prod_content (
+        id,prod_name,pic,album_pics,principle,feature,register_card,model,expire_date,pack
+        )
+        values (#{id,jdbcType=BIGINT},#{prodName,jdbcType=VARCHAR},#{pic,jdbcType=VARCHAR},
+        #{albumPics,jdbcType=VARCHAR},#{principle,jdbcType=VARCHAR}, #{feature,jdbcType=VARCHAR},
+        #{registerCard,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR},
+        #{expireDate,jdbcType=VARCHAR}, #{pack,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <update id="updateContent" parameterType="com.example.guanWang.dto.ProdParam">
+        update prod_content
+        <set>
+            <if test="prodName != null">
+                prod_name = #{prodName,jdbcType=VARCHAR},
+            </if>
+            <if test="pic != null">
+                pic = #{pic,jdbcType=VARCHAR},
+            </if>
+            <if test="albumPics != null">
+                album_pics = #{albumPics,jdbcType=VARCHAR},
+            </if>
+            <if test="principle != null">
+                principle=#{principle,jdbcType=VARCHAR},
+            </if>
+            <if test="feature != null">
+                feature=#{feature,jdbcType=VARCHAR},
+            </if>
+            <if test="registerCard != null">
+                register_card = #{registerCard,jdbcType=VARCHAR},
+            </if>
+            <if test="model != null">
+                model = #{model,jdbcType=VARCHAR},
+            </if>
+            <if test="expireDate != null">
+                expire_date=#{expireDate,jdbcType=VARCHAR},
+            </if>
+            <if test="pack != null">
+                pack=#{pack,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        delete from news_content where news_id=#{newsId,jdbcType=INTEGER}
+    </delete>
+
+    <delete id="deleteBatchProd" parameterType="java.lang.Long">
+        delete from prod_content
+        where
+        id in
+        <foreach collection="idList" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
+

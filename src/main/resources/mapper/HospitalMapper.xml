@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.guanWang.mapper.HospitalMapper">
+    <resultMap id="BaseResultMap" type="com.example.guanWang.model.Hospital">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="hospital_name" jdbcType="VARCHAR" property="hospitalName"/>
+        <result column="director_name" jdbcType="VARCHAR" property="directorName"/>
+        <result column="director_phone" jdbcType="VARCHAR" property="directorPhone"/>
+        <result column="service_name" jdbcType="VARCHAR" property="serviceName"/>
+        <result column="equipment_model" jdbcType="VARCHAR" property="equipmentModel"/>
+        <result column="receiver_region" jdbcType="VARCHAR" property="receiverRegion"/>
+        <result column="receiver_city" jdbcType="VARCHAR" property="receiverCity"/>
+        <result column="receiver_province" jdbcType="VARCHAR" property="receiverProvince"/>
+        <result column="receiver_detail_address" jdbcType="VARCHAR" property="receiverDetailAddress"/>
+    </resultMap>
+
+    <resultMap id="CityHospitalMap" type="com.example.guanWang.model.HospitalCity">
+        <result column="city" jdbcType="VARCHAR" property="city"/>
+        <result column="count" jdbcType="INTEGER" property="count"/>
+    </resultMap>
+
+    <select id="getCityHospitalList" resultMap="CityHospitalMap">
+        select
+           receiver_city city, count(*) count
+        from hospital
+           group by receiver_city
+    </select>
+
+
+    <sql id="Base_Column_List">
+        id, hospital_name, director_name, director_phone, service_name, equipment_model,receiver_region,receiver_city,receiver_province,receiver_detail_address
+    </sql>
+
+    <delete id="delete" parameterType="java.lang.String">
+    delete from hospital
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+    <update id="update" parameterType="com.example.guanWang.model.Hospital">
+        update hospital
+        <set>
+            <if test="hospitalName != null">
+                hospital_name = #{hospitalName,jdbcType=VARCHAR},
+            </if>
+            <if test="directorName != null">
+                director_name = #{directorName,jdbcType=VARCHAR},
+            </if>
+            <if test="directorPhone != null">
+                director_phone = #{directorPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="serviceName != null">
+                service_name = #{serviceName,jdbcType=VARCHAR},
+            </if>
+            <if test="equipmentModel != null">
+                equipment_model = #{equipmentModel,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverRegion != null">
+                receiver_region = #{receiverRegion,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverCity != null">
+                receiver_city = #{receiverCity,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverProvince != null">
+                receiver_province = #{receiverProvince,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverDetailAddress != null">
+                receiver_detail_address = #{receiverDetailAddress,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <select id="cityHospitalList" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from hospital
+        <if test="city != null  and city != ''" >
+            where receiver_city = #{city,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <select id="list" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from hospital
+        <if test="keyword != null  and keyword != ''" >
+            where hospital_name like concat('%', #{keyword}, '%')
+            or director_name like concat('%', #{keyword}, '%')
+        </if>
+    </select>
+    <insert id="add" parameterType="com.example.guanWang.model.Hospital">
+        insert into hospital
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="hospitalName != null">
+                hospital_name,
+            </if>
+            <if test="directorName != null">
+                director_name,
+            </if>
+            <if test="directorPhone != null">
+                director_phone,
+            </if>
+            <if test="serviceName != null">
+                service_name,
+            </if>
+            <if test="equipmentModel != null">
+                equipment_model,
+            </if>
+            <if test="receiverRegion != null">
+                receiver_region,
+            </if>
+            <if test="receiverCity != null">
+                receiver_city,
+            </if>
+            <if test="receiverProvince != null">
+                receiver_province,
+            </if>
+            <if test="receiverDetailAddress != null">
+                receiver_detail_address,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="hospitalName != null">
+                #{hospitalName,jdbcType=VARCHAR},
+            </if>
+            <if test="directorName != null">
+                #{directorName,jdbcType=VARCHAR},
+            </if>
+            <if test="directorPhone != null">
+                #{directorPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="serviceName != null">
+                #{serviceName,jdbcType=VARCHAR},
+            </if>
+            <if test="equipmentModel != null">
+                #{equipmentModel,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverRegion != null">
+                #{receiverRegion,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverCity != null">
+                #{receiverCity,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverProvince != null">
+                #{receiverProvince,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverDetailAddress != null">
+                #{receiverDetailAddress,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+</mapper>

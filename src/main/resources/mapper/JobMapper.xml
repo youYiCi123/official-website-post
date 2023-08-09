@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.guanWang.mapper.JobMapper">
+    <resultMap id="BaseResultMap" type="com.example.guanWang.model.Job">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="recruit_name" jdbcType="VARCHAR" property="recruitName"/>
+        <result column="recruit_count" jdbcType="VARCHAR" property="recruitCount"/>
+        <result column="release_date" jdbcType="TIMESTAMP" property="releaseDate"/>
+        <result column="salary" jdbcType="VARCHAR" property="salary"/>
+        <result column="responsibility" jdbcType="VARCHAR" property="responsibility"/>
+        <result column="requirement" jdbcType="VARCHAR" property="requirement"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, recruit_name, recruit_count, release_date, salary, responsibility,requirement
+    </sql>
+
+    <select id="jobList" parameterType="java.lang.String" resultType="com.example.guanWang.model.Job">
+        select
+        id, recruit_name, recruit_count, release_date, salary, responsibility,requirement
+        from job
+    </select>
+
+    <select id="list" parameterType="java.lang.String" resultType="com.example.guanWang.model.JobTableShow">
+        select
+        id, recruit_name, recruit_count, release_date, salary
+        from job
+        <if test="keyword != null  and keyword != ''" >
+            where recruit_name like concat('%', #{keyword}, '%')
+        </if>
+    </select>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        delete
+        from job
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteBatch" parameterType="java.lang.Long">
+        delete from job
+        where
+        id in
+        <foreach collection="idList" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="queryJobContent" resultType="com.example.guanWang.model.Job">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        job
+        where id=#{id,jdbcType=BIGINT}
+    </select>
+
+    <insert id="addContent" parameterType="com.example.guanWang.model.Job">
+        insert into job ( id, recruit_name, recruit_count, release_date, salary, responsibility,requirement)
+        values (#{id,jdbcType=INTEGER},#{recruitName,jdbcType=VARCHAR}, #{recruitCount,jdbcType=INTEGER},
+        #{releaseDate,jdbcType=TIMESTAMP}, #{salary,jdbcType=VARCHAR},#{responsibility,jdbcType=VARCHAR}, #{requirement,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <update id="updateContent" parameterType="com.example.guanWang.model.Job">
+        update job
+        <set>
+            <if test="recruitName != null">
+                recruit_name = #{recruitName,jdbcType=VARCHAR},
+            </if>
+            <if test="recruitCount != null">
+                recruit_count = #{recruitCount,jdbcType=VARCHAR},
+            </if>
+            <if test="releaseDate != null">
+                release_date=#{releaseDate,jdbcType=VARCHAR},
+            </if>
+            <if test="salary != null">
+                salary=#{salary,jdbcType=VARCHAR},
+            </if>
+            <if test="responsibility != null">
+                responsibility = #{responsibility,jdbcType=VARCHAR},
+            </if>
+            <if test="requirement != null">
+                requirement=#{requirement,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

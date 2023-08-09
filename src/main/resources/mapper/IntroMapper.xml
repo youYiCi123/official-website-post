@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.guanWang.mapper.IntroMapper">
+    <resultMap id="BaseResultMap" type="com.example.guanWang.dto.IntroParam">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="introduce" jdbcType="VARCHAR" property="introduce"/>
+        <result column="honor_pics" jdbcType="VARCHAR" property="honorPics"/>
+        <result column="patent_pics" jdbcType="VARCHAR" property="patentPics"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,introduce,honor_pics,patent_pics
+    </sql>
+
+    <select id="queryHonorContent" resultType="com.example.guanWang.dto.IntroParam">
+        select
+        id,introduce,honor_pics,patent_pics
+        from
+        company_intro
+    </select>
+
+    <insert id="addContent" parameterType="com.example.guanWang.dto.IntroParam">
+        insert into company_intro
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="introduce != null">
+                introduce,
+            </if>
+            <if test="honorPics != null">
+                honor_pics,
+            </if>
+            <if test="patentPics != null">
+                patent_pics,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="introduce != null">
+                #{introduce,jdbcType=VARCHAR},
+            </if>
+            <if test="honorPics != null">
+                #{honorPics,jdbcType=VARCHAR},
+            </if>
+            <if test="patentPics != null">
+                #{patentPics,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateContent" parameterType="com.example.guanWang.dto.IntroParam">
+        update company_intro
+        <set>
+            <if test="introduce != null">
+                introduce = #{introduce,jdbcType=VARCHAR},
+            </if>
+            <if test="honorPics != null">
+                honor_pics = #{honorPics,jdbcType=VARCHAR},
+            </if>
+            <if test="patentPics != null">
+                patent_pics = #{patentPics,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

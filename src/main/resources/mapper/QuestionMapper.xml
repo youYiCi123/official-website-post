@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.guanWang.mapper.QuestionMapper">
+    <resultMap id="BaseResultMap" type="com.example.guanWang.model.Question">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="question" jdbcType="VARCHAR" property="question"/>
+        <result column="answer" jdbcType="VARCHAR" property="answer"/>
+        <result column="series_id" jdbcType="VARCHAR" property="seriesId"/>
+        <result column="first_level" jdbcType="VARCHAR" property="firstLevel"/>
+        <result column="view_count" jdbcType="INTEGER" property="viewCount"/>
+    </resultMap>
+
+    <select id="list"  resultType="com.example.guanWang.model.Question">
+        select
+        id, question,answer,series_id,view_count
+        from question
+        <where>
+        <if test="keyWord != null  and keyWord != ''" >
+             question like concat('%', #{keyWord}, '%')
+        </if>
+        <if test="solutionSeries != null  and solutionSeries != ''" >
+            and series_id=#{solutionSeries,jdbcType=VARCHAR}
+        </if>
+        </where>
+    </select>
+
+    <select id="getListByFirstLevel"  resultType="com.example.guanWang.model.Question">
+        select
+        id, question,answer,series_id,view_count
+        from question
+        <where>
+            <if test="firstLevel != null  and firstLevel != ''" >
+                first_level=#{firstLevel,jdbcType=VARCHAR}
+            </if>
+        </where>
+        ORDER BY view_count DESC
+    </select>
+
+    <select id="getQuestionHot"  resultType="com.example.guanWang.model.Question">
+        select
+        id, question
+        from question
+        ORDER BY view_count DESC
+    </select>
+
+    <select id="getQuestionListByType"  resultType="com.example.guanWang.model.Question">
+        select
+        id, question,answer,series_id,view_count
+        from question
+        where series_id=#{id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        delete
+        from question
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="create" parameterType="com.example.guanWang.model.Question">
+        insert into question ( id, question,answer,series_id,first_level)
+        values (#{id,jdbcType=INTEGER},#{question,jdbcType=VARCHAR},#{answer,jdbcType=VARCHAR},#{seriesId,jdbcType=VARCHAR},#{firstLevel,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="addQuestionView" parameterType="java.lang.Long">
+        update question
+            set view_count=view_count+1
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="update" parameterType="com.example.guanWang.model.Question">
+        update question
+        <set>
+            <if test="question != null">
+                question = #{question,jdbcType=VARCHAR},
+            </if>
+            <if test="answer != null">
+                answer = #{answer,jdbcType=VARCHAR},
+            </if>
+            <if test="seriesId != null">
+                series_id = #{seriesId,jdbcType=VARCHAR},
+            </if>
+            <if test="firstLevel != null">
+                first_level = #{firstLevel,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>
